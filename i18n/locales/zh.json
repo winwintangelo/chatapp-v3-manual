@@ -1,0 +1,40 @@
+{
+  "auth": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "dontHaveAccount": "没有账号？立即注册",
+    "alreadyHaveAccount": "已有账号？立即登录",
+    "checkEmail": "请检查您的邮箱以确认账号"
+  },
+  "tabs": {
+    "home": "首页",
+    "more": "更多"
+  },
+  "chat": {
+    "title": "GPT 聊天",
+    "placeholder": "请输入您的问题..."
+  },
+  "more": {
+    "title": "更多",
+    "recentChats": "最近聊天",
+    "settings": "设置",
+    "accountSettings": "账号设置",
+    "notifications": "通知",
+    "privacy": "隐私",
+    "signOut": "退出登录",
+    "language": "语言",
+    "languages": {
+      "en": "英语",
+      "zh": "中文",
+      "es": "西班牙语",
+      "fr": "法语"
+    }
+  },
+  "common": {
+    "error": "错误",
+    "success": "成功",
+    "ok": "确定"
+  }
+} 

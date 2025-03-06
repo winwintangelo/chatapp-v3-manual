@@ -1,0 +1,40 @@
+{
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "email": "Email",
+    "password": "Mot de Passe",
+    "dontHaveAccount": "Vous n'avez pas de compte ? Inscrivez-vous",
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
+    "checkEmail": "Veuillez vérifier votre email pour confirmer votre compte"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "more": "Plus"
+  },
+  "chat": {
+    "title": "Chat GPT",
+    "placeholder": "Posez une question..."
+  },
+  "more": {
+    "title": "Plus",
+    "recentChats": "Conversations Récentes",
+    "settings": "Paramètres",
+    "accountSettings": "Paramètres du Compte",
+    "notifications": "Notifications",
+    "privacy": "Confidentialité",
+    "signOut": "Se Déconnecter",
+    "language": "Langue",
+    "languages": {
+      "en": "Anglais",
+      "zh": "Chinois",
+      "es": "Espagnol",
+      "fr": "Français"
+    }
+  },
+  "common": {
+    "error": "Erreur",
+    "success": "Succès",
+    "ok": "OK"
+  }
+} 

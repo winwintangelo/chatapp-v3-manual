@@ -1,0 +1,40 @@
+{
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "dontHaveAccount": "Don't have an account? Sign Up",
+    "alreadyHaveAccount": "Already have an account? Sign In",
+    "checkEmail": "Please check your email to confirm your account"
+  },
+  "tabs": {
+    "home": "Home",
+    "more": "More"
+  },
+  "chat": {
+    "title": "GPT Chat",
+    "placeholder": "Ask something..."
+  },
+  "more": {
+    "title": "More",
+    "recentChats": "Recent Chats",
+    "settings": "Settings",
+    "accountSettings": "Account Settings",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "signOut": "Sign Out",
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "zh": "Chinese",
+      "es": "Spanish",
+      "fr": "French"
+    }
+  },
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "ok": "OK"
+  }
+} 

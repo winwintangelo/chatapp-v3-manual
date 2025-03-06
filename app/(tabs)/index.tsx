@@ -6,6 +6,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function App() {
   const { messages, error, handleInputChange, input, handleSubmit } = useChat({
@@ -16,6 +17,7 @@ export default function App() {
 
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
+  const { t } = useTranslation();
 
   // Auto scroll to bottom when messages change
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function App() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ThemedView style={styles.content}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">GPT Chat</ThemedText>
+          <ThemedText type="title">{t('chat.title')}</ThemedText>
         </ThemedView>
         <ThemedView style={styles.scrollContainer}>
           <ScrollView 
@@ -78,7 +80,7 @@ export default function App() {
         <ThemedView style={[styles.inputContainer, { paddingBottom: insets.bottom + 24 }]}>
           <TextInput
             style={styles.input}
-            placeholder="Ask something..."
+            placeholder={t('chat.placeholder')}
             value={input}
             onChange={e =>
               handleInputChange({

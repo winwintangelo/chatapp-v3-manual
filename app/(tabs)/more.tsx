@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, Platform, TouchableOpacity, Alert } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -6,8 +6,31 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 export default function MoreScreen() {
+  const { session, signOut } = useAuth();
+  const { currentLanguage, setLanguage } = useLanguage();
+  const { t } = useTranslation();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error: any) {
+      Alert.alert(t('common.error'), error.message);
+    }
+  };
+
+  const handleLanguageChange = async (language: string) => {
+    try {
+      await setLanguage(language);
+    } catch (error: any) {
+      Alert.alert(t('common.error'), error.message);
+    }
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -20,24 +43,24 @@ export default function MoreScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">More</ThemedText>
+        <ThemedText type="title">{t('more.title')}</ThemedText>
       </ThemedView>
 
       {/* User Profile Section */}
       <ThemedView style={styles.profileSection}>
         <Image
-          source={{ uri: 'https://ui-avatars.com/api/?name=John+Doe&background=0a7ea4&color=fff' }}
+          source={{ uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(session?.user?.email || 'User')}&background=0a7ea4&color=fff` }}
           style={styles.avatar}
         />
         <ThemedView style={styles.profileInfo}>
-          <ThemedText type="subtitle">John Doe</ThemedText>
-          <ThemedText style={styles.email}>john.doe@example.com</ThemedText>
+          <ThemedText type="subtitle">{session?.user?.email?.split('@')[0] || 'User'}</ThemedText>
+          <ThemedText style={styles.email}>{session?.user?.email}</ThemedText>
         </ThemedView>
       </ThemedView>
 
       {/* Chat History Section */}
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>Recent Chats</ThemedText>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>{t('more.recentChats')}</ThemedText>
         <TouchableOpacity style={styles.chatItem}>
           <ThemedView style={styles.chatItemContent}>
             <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
@@ -74,25 +97,68 @@ export default function MoreScreen() {
 
       {/* Settings Section */}
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>Settings</ThemedText>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>{t('more.settings')}</ThemedText>
+        
+        {/* Language Selection */}
+        <ThemedView style={styles.languageSection}>
+          <ThemedText type="defaultSemiBold" style={styles.languageTitle}>{t('more.language')}</ThemedText>
+          <ThemedView style={styles.languageOptions}>
+            <TouchableOpacity 
+              style={[styles.languageOption, currentLanguage === 'en' && styles.languageOptionActive]}
+              onPress={() => handleLanguageChange('en')}>
+              <ThemedText style={[styles.languageText, currentLanguage === 'en' && styles.languageTextActive]}>
+                {t('more.languages.en')}
+              </ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.languageOption, currentLanguage === 'zh' && styles.languageOptionActive]}
+              onPress={() => handleLanguageChange('zh')}>
+              <ThemedText style={[styles.languageText, currentLanguage === 'zh' && styles.languageTextActive]}>
+                {t('more.languages.zh')}
+              </ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.languageOption, currentLanguage === 'es' && styles.languageOptionActive]}
+              onPress={() => handleLanguageChange('es')}>
+              <ThemedText style={[styles.languageText, currentLanguage === 'es' && styles.languageTextActive]}>
+                {t('more.languages.es')}
+              </ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.languageOption, currentLanguage === 'fr' && styles.languageOptionActive]}
+              onPress={() => handleLanguageChange('fr')}>
+              <ThemedText style={[styles.languageText, currentLanguage === 'fr' && styles.languageTextActive]}>
+                {t('more.languages.fr')}
+              </ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+
         <TouchableOpacity style={styles.settingItem}>
           <ThemedView style={styles.settingItemContent}>
             <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">Account Settings</ThemedText>
+            <ThemedText type="defaultSemiBold">{t('more.accountSettings')}</ThemedText>
           </ThemedView>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.settingItem}>
           <ThemedView style={styles.settingItemContent}>
             <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">Notifications</ThemedText>
+            <ThemedText type="defaultSemiBold">{t('more.notifications')}</ThemedText>
           </ThemedView>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.settingItem}>
           <ThemedView style={styles.settingItemContent}>
             <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">Privacy</ThemedText>
+            <ThemedText type="defaultSemiBold">{t('more.privacy')}</ThemedText>
+          </ThemedView>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.settingItem, styles.signOutItem]} onPress={handleSignOut}>
+          <ThemedView style={styles.settingItemContent}>
+            <IconSymbol size={24} name="rectangle.portrait.and.arrow.right" color="#ff3b30" />
+            <ThemedText type="defaultSemiBold" style={styles.signOutText}>{t('more.signOut')}</ThemedText>
           </ThemedView>
         </TouchableOpacity>
       </ThemedView>
@@ -187,5 +253,40 @@ const styles = StyleSheet.create({
   settingItemContent: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  signOutItem: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#ff3b30',
+  },
+  signOutText: {
+    color: '#ff3b30',
+  },
+  languageSection: {
+    marginBottom: 16,
+  },
+  languageTitle: {
+    marginBottom: 8,
+  },
+  languageOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  languageOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  languageOptionActive: {
+    backgroundColor: '#007AFF',
+  },
+  languageText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  languageTextActive: {
+    color: '#fff',
   },
 });
