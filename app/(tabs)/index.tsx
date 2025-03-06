@@ -59,6 +59,12 @@ export default function App() {
                       m.role === 'user' ? styles.userRoleText : styles.assistantRoleText
                     ]}>{m.role}</Text>
                   )}
+
+                  {m.reasoning && <Text style={[
+                    styles.messageText,
+                    m.role === 'user' ? styles.userMessageText : styles.assistantMessageText
+                  ]}>{m.reasoning}</Text>}
+                 
                   <Text style={[
                     styles.messageText,
                     m.role === 'user' ? styles.userMessageText : styles.assistantMessageText
@@ -72,7 +78,7 @@ export default function App() {
         <ThemedView style={[styles.inputContainer, { paddingBottom: insets.bottom + 24 }]}>
           <TextInput
             style={styles.input}
-            placeholder="Say something..."
+            placeholder="Ask something..."
             value={input}
             onChange={e =>
               handleInputChange({
