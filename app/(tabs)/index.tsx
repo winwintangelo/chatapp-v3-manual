@@ -1,15 +1,16 @@
 import { generateAPIUrl } from '@/utils'
 import { useChat } from '@ai-sdk/react';
 import { fetch as expoFetch } from 'expo/fetch';
-import { View, TextInput, ScrollView, Text, StyleSheet, Platform } from 'react-native';
+import { View, TextInput, ScrollView, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useChatHistory } from '../../contexts/ChatHistoryContext';
 
 export default function App() {
-  const { messages, error, handleInputChange, input, handleSubmit } = useChat({
+  const { messages, error, handleInputChange, input, handleSubmit, setMessages } = useChat({
     fetch: expoFetch as unknown as typeof globalThis.fetch,
     api: generateAPIUrl('/api/chat'),
     onError: error => console.error(error, 'ERROR'),
@@ -18,6 +19,8 @@ export default function App() {
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
   const { t } = useTranslation();
+  const { createChat, updateChat } = useChatHistory();
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
   // Auto scroll to bottom when messages change
   useEffect(() => {
@@ -25,6 +28,25 @@ export default function App() {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
   }, [messages]);
+
+  // Save chat history when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      const title = messages[0].content.slice(0, 50) + (messages[0].content.length > 50 ? '...' : '');
+      if (!currentChatId) {
+        createChat(title, messages).then((chat: { id: string }) => {
+          setCurrentChatId(chat.id);
+        });
+      } else {
+        updateChat(currentChatId, messages);
+      }
+    }
+  }, [messages]);
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setCurrentChatId(null);
+  };
 
   if (error) return <Text>{error.message}</Text>;
 
@@ -37,6 +59,12 @@ export default function App() {
       <ThemedView style={styles.content}>
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">{t('chat.title')}</ThemedText>
+          <TouchableOpacity 
+            style={styles.newChatButton}
+            onPress={handleNewChat}
+          >
+            <ThemedText style={styles.newChatText}>{t('chat.newChat')}</ThemedText>
+          </TouchableOpacity>
         </ThemedView>
         <ThemedView style={styles.scrollContainer}>
           <ScrollView 
@@ -113,9 +141,21 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     gap: 8,
     paddingTop: 24,
     paddingBottom: 16,
+  },
+  newChatButton: {
+    backgroundColor: '#0a7ea4',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  newChatText: {
+    color: '#fff',
+    fontSize: 14,
   },
   scrollContainer: {
     flex: 1,

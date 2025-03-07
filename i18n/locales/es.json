@@ -14,7 +14,8 @@
   },
   "chat": {
     "title": "Chat GPT",
-    "placeholder": "Pregunta algo..."
+    "placeholder": "Pregunta algo...",
+    "newChat": "Nuevo Chat"
   },
   "more": {
     "title": "Más",
@@ -30,11 +31,17 @@
       "zh": "Chino",
       "es": "Español",
       "fr": "Francés"
-    }
+    },
+    "searchChats": "Buscar chats...",
+    "noChats": "No hay chats aún",
+    "noMessages": "Sin mensajes"
   },
   "common": {
     "error": "Error",
     "success": "Éxito",
-    "ok": "Aceptar"
+    "ok": "Aceptar",
+    "back": "Atrás",
+    "delete": "Eliminar",
+    "loading": "Cargando..."
   }
 } 

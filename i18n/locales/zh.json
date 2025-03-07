@@ -14,7 +14,8 @@
   },
   "chat": {
     "title": "GPT 聊天",
-    "placeholder": "请输入您的问题..."
+    "placeholder": "请输入您的问题...",
+    "newChat": "新对话"
   },
   "more": {
     "title": "更多",
@@ -30,11 +31,17 @@
       "zh": "中文",
       "es": "西班牙语",
       "fr": "法语"
-    }
+    },
+    "searchChats": "搜索聊天...",
+    "noChats": "暂无聊天记录",
+    "noMessages": "暂无消息"
   },
   "common": {
     "error": "错误",
     "success": "成功",
-    "ok": "确定"
+    "ok": "确定",
+    "back": "返回",
+    "delete": "删除",
+    "loading": "加载中..."
   }
 } 

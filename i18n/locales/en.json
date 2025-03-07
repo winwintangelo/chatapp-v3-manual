@@ -14,7 +14,8 @@
   },
   "chat": {
     "title": "GPT Chat",
-    "placeholder": "Ask something..."
+    "placeholder": "Ask something...",
+    "newChat": "New Chat"
   },
   "more": {
     "title": "More",
@@ -30,11 +31,17 @@
       "zh": "Chinese",
       "es": "Spanish",
       "fr": "French"
-    }
+    },
+    "searchChats": "Search chats...",
+    "noChats": "No chats yet",
+    "noMessages": "No messages"
   },
   "common": {
     "error": "Error",
     "success": "Success",
-    "ok": "OK"
+    "ok": "OK",
+    "back": "Back",
+    "delete": "Delete",
+    "loading": "Loading..."
   }
 } 

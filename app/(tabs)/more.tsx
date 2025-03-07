@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Image, Platform, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -8,12 +8,17 @@ import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useChatHistory } from '../../contexts/ChatHistoryContext';
 import { useTranslation } from 'react-i18next';
+import { router } from 'expo-router';
+import { useState } from 'react';
 
 export default function MoreScreen() {
   const { session, signOut } = useAuth();
   const { currentLanguage, setLanguage } = useLanguage();
+  const { chatHistory, loading, searchChats } = useChatHistory();
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSignOut = async () => {
     try {
@@ -29,6 +34,15 @@ export default function MoreScreen() {
     } catch (error: any) {
       Alert.alert(t('common.error'), error.message);
     }
+  };
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    searchChats(text);
+  };
+
+  const handleChatPress = (chatId: string) => {
+    router.push(`/chat/${chatId}`);
   };
 
   return (
@@ -61,38 +75,48 @@ export default function MoreScreen() {
       {/* Chat History Section */}
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>{t('more.recentChats')}</ThemedText>
-        <TouchableOpacity style={styles.chatItem}>
-          <ThemedView style={styles.chatItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedView style={styles.chatItemText}>
-              <ThemedText type="defaultSemiBold">General Chat</ThemedText>
-              <ThemedText style={styles.chatPreview}>Last message preview...</ThemedText>
-            </ThemedView>
-            <ThemedText style={styles.chatTime}>2h ago</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
+        
+        {/* Search Input */}
+        <ThemedView style={styles.searchContainer}>
+          <IconSymbol size={20} name="magnifyingglass" color="#666" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t('more.searchChats')}
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        </ThemedView>
 
-        <TouchableOpacity style={styles.chatItem}>
-          <ThemedView style={styles.chatItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedView style={styles.chatItemText}>
-              <ThemedText type="defaultSemiBold">Code Review</ThemedText>
-              <ThemedText style={styles.chatPreview}>Last message preview...</ThemedText>
-            </ThemedView>
-            <ThemedText style={styles.chatTime}>1d ago</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.chatItem}>
-          <ThemedView style={styles.chatItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedView style={styles.chatItemText}>
-              <ThemedText type="defaultSemiBold">Project Planning</ThemedText>
-              <ThemedText style={styles.chatPreview}>Last message preview...</ThemedText>
-            </ThemedView>
-            <ThemedText style={styles.chatTime}>2d ago</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0a7ea4" style={styles.loadingIndicator} />
+        ) : chatHistory.length === 0 ? (
+          <ThemedText style={styles.noChats}>{t('more.noChats')}</ThemedText>
+        ) : (
+          chatHistory.map(chat => (
+            <TouchableOpacity 
+              key={chat.id} 
+              style={styles.chatItem}
+              onPress={() => handleChatPress(chat.id)}
+            >
+              <ThemedView style={styles.chatItemContent}>
+                <IconSymbol size={24} name="bubble.left.fill" color="#0a7ea4" />
+                <ThemedView style={styles.chatItemText}>
+                  <ThemedText type="defaultSemiBold">{chat.title}</ThemedText>
+                  <ThemedText 
+                    style={styles.chatPreview}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  >
+                    {chat.messages[chat.messages.length - 1]?.content || t('more.noMessages')}
+                  </ThemedText>
+                </ThemedView>
+                <ThemedText style={styles.chatTime}>
+                  {new Date(chat.updated_at).toLocaleDateString()}
+                </ThemedText>
+              </ThemedView>
+            </TouchableOpacity>
+          ))
+        )}
       </ThemedView>
 
       {/* Settings Section */}
@@ -133,27 +157,6 @@ export default function MoreScreen() {
             </TouchableOpacity>
           </ThemedView>
         </ThemedView>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <ThemedView style={styles.settingItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">{t('more.accountSettings')}</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <ThemedView style={styles.settingItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">{t('more.notifications')}</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <ThemedView style={styles.settingItemContent}>
-            <IconSymbol size={24} name="house.fill" color="#0a7ea4" />
-            <ThemedText type="defaultSemiBold">{t('more.privacy')}</ThemedText>
-          </ThemedView>
-        </TouchableOpacity>
 
         <TouchableOpacity style={[styles.settingItem, styles.signOutItem]} onPress={handleSignOut}>
           <ThemedView style={styles.settingItemContent}>
@@ -234,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 2,
+    lineHeight: 20,
   },
   chatTime: {
     fontSize: 12,
@@ -288,5 +292,30 @@ const styles = StyleSheet.create({
   },
   languageTextActive: {
     color: '#fff',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    fontSize: 16,
+  },
+  loadingIndicator: {
+    marginVertical: 20,
+  },
+  noChats: {
+    textAlign: 'center',
+    color: '#666',
+    marginVertical: 20,
+  },
+  noMessages: {
+    color: '#999',
   },
 });

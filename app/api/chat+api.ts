@@ -17,15 +17,15 @@ export async function POST(req: Request) {
   });
 
   const result = streamText({
-    model: enhancedModel, //openai('gpt-4o'),
+    model: openai('gpt-4o'), //enhancedModel, 
     messages,
   });
 
-  //return result.toDataStreamResponse();
-  return result.toDataStreamResponse({
-    headers: {
-      "Content-Type": "application/octet-stream",
-    },
-    sendReasoning: true,
-  });
+  return result.toDataStreamResponse();
+  // return result.toDataStreamResponse({
+  //   headers: {
+  //     "Content-Type": "application/octet-stream",
+  //   },
+  //   sendReasoning: true,
+  // });
 }
