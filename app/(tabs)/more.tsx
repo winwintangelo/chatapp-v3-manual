@@ -13,6 +13,10 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { useState } from 'react';
 
+// Import the images
+const PLACEHOLDER_AVATAR = require('@/assets/images/Profile_avatar_placeholder_large.png');
+const APP_BACKGROUND = require('@/assets/images/app-background-small.png');
+
 export default function MoreScreen() {
   const { session, signOut } = useAuth();
   const { currentLanguage, setLanguage } = useLanguage();
@@ -49,11 +53,10 @@ export default function MoreScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
+        <Image
+          source={APP_BACKGROUND}
           style={styles.headerImage}
+          resizeMode="cover"
         />
       }>
       <ThemedView style={styles.titleContainer}>
@@ -63,12 +66,15 @@ export default function MoreScreen() {
       {/* User Profile Section */}
       <ThemedView style={styles.profileSection}>
         <Image
-          source={{ uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(session?.user?.email || 'User')}&background=0a7ea4&color=fff` }}
+          source={session?.user?.email ? 
+            { uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.email)}&background=0a7ea4&color=fff` } : 
+            PLACEHOLDER_AVATAR
+          }
           style={styles.avatar}
         />
         <ThemedView style={styles.profileInfo}>
           <ThemedText type="subtitle">{session?.user?.email?.split('@')[0] || 'User'}</ThemedText>
-          <ThemedText style={styles.email}>{session?.user?.email}</ThemedText>
+          <ThemedText style={styles.email}>{session?.user?.email || t('more.guestUser')}</ThemedText>
         </ThemedView>
       </ThemedView>
 
@@ -171,14 +177,15 @@ export default function MoreScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
+    width: '100%',
+    height: '100%',
     position: 'absolute',
   },
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+    marginTop: 16,
+    marginBottom: 24,
   },
   profileSection: {
     flexDirection: 'row',

@@ -1,5 +1,6 @@
 import { POST } from '@/app/api/chat+api';
 import { openai } from '@ai-sdk/openai';
+import { groq } from '@ai-sdk/groq';
 import { streamText } from 'ai';
 
 // Mock the dependencies
@@ -14,7 +15,10 @@ jest.mock('@ai-sdk/groq', () => ({
 jest.mock('ai', () => ({
   streamText: jest.fn(),
   generateText: jest.fn(),
-  wrapLanguageModel: jest.fn(),
+  wrapLanguageModel: jest.fn(({ model }) => ({
+    ...model,
+    middleware: { tagName: 'think' }
+  })),
   extractReasoningMiddleware: jest.fn(() => ({
     tagName: 'think'
   })),
@@ -26,7 +30,7 @@ describe('Chat API', () => {
     jest.clearAllMocks();
   });
 
-  it('handles POST requests correctly', async () => {
+  it('handles POST requests correctly with Groq model', async () => {
     const mockMessages = [
       { role: 'user', content: 'Hello' },
       { role: 'assistant', content: 'Hi there!' }
@@ -41,22 +45,32 @@ describe('Chat API', () => {
       toDataStreamResponse: jest.fn().mockReturnValue(new Response()),
     };
 
+    // Mock the current model
+    const mockModel = { name: 'mocked-model' };
+    ((groq as unknown) as jest.Mock).mockReturnValue(mockModel);
     (streamText as jest.Mock).mockReturnValue(mockStreamResponse);
-    ((openai as unknown) as jest.Mock).mockReturnValue('mocked-model');
 
     await POST(mockRequest);
 
-    // Verify openai was called with correct model
-    expect(openai).toHaveBeenCalledWith('gpt-4o');
+    // Verify the model was called with correct parameters
+    expect(groq).toHaveBeenCalledWith('deepseek-r1-distill-qwen-32b');
 
     // Verify streamText was called with correct parameters
     expect(streamText).toHaveBeenCalledWith({
-      model: 'mocked-model',
+      model: {
+        ...mockModel,
+        middleware: { tagName: 'think' }
+      },
       messages: mockMessages,
     });
 
-    // Verify response was streamed
-    expect(mockStreamResponse.toDataStreamResponse).toHaveBeenCalled();
+    // Verify response was streamed with correct headers
+    expect(mockStreamResponse.toDataStreamResponse).toHaveBeenCalledWith({
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+      sendReasoning: true,
+    });
   });
 
   it('throws error for invalid request body', async () => {
@@ -66,5 +80,36 @@ describe('Chat API', () => {
     });
 
     await expect(POST(mockRequest)).rejects.toThrow();
+  });
+
+  it('verifies model configuration with middleware', async () => {
+    const mockMessages = [
+      { role: 'user', content: 'Hello' }
+    ];
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ messages: mockMessages }),
+    });
+
+    const mockStreamResponse = {
+      toDataStreamResponse: jest.fn().mockReturnValue(new Response()),
+    };
+
+    const mockModel = { name: 'mocked-model' };
+    ((groq as unknown) as jest.Mock).mockReturnValue(mockModel);
+    (streamText as jest.Mock).mockReturnValue(mockStreamResponse);
+
+    await POST(mockRequest);
+
+    // Verify the model configuration with middleware
+    expect(groq).toHaveBeenCalledWith('deepseek-r1-distill-qwen-32b');
+    expect(streamText).toHaveBeenCalledWith({
+      model: {
+        ...mockModel,
+        middleware: { tagName: 'think' }
+      },
+      messages: mockMessages,
+    });
   });
 }); 
