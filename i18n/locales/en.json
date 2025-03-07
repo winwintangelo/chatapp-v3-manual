@@ -13,7 +13,7 @@
     "more": "More"
   },
   "chat": {
-    "title": "GPT Chat",
+    "title": "YooChat",
     "placeholder": "Ask something...",
     "newChat": "New Chat"
   },
@@ -34,7 +34,15 @@
     },
     "searchChats": "Search chats...",
     "noChats": "No chats yet",
-    "noMessages": "No messages"
+    "noMessages": "No messages",
+    "securitySettings": "Security Settings",
+    "securitySettingsDescription": "Manage your authentication and security preferences",
+    "biometricAuth": "Biometric Authentication",
+    "biometricAuthDescription": "Use your device's biometric authentication (fingerprint/face) to sign in",
+    "biometricNotAvailable": "Biometric authentication is not available on this device",
+    "verifyIdentity": "Verify your identity",
+    "usePassword": "Use password instead",
+    "authentication": "Authentication"
   },
   "common": {
     "error": "Error",

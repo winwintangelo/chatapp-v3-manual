@@ -13,7 +13,7 @@
     "more": "更多"
   },
   "chat": {
-    "title": "GPT 聊天",
+    "title": "友话",
     "placeholder": "请输入您的问题...",
     "newChat": "新对话"
   },
@@ -34,7 +34,15 @@
     },
     "searchChats": "搜索聊天...",
     "noChats": "暂无聊天记录",
-    "noMessages": "暂无消息"
+    "noMessages": "暂无消息",
+    "securitySettings": "安全设置",
+    "securitySettingsDescription": "管理您的身份验证和安全偏好设置",
+    "biometricAuth": "生物识别",
+    "biometricAuthDescription": "使用设备生物识别（指纹/面容）登录",
+    "biometricNotAvailable": "此设备不支持生物识别",
+    "verifyIdentity": "验证身份",
+    "usePassword": "使用密码",
+    "authentication": "身份验证"
   },
   "common": {
     "error": "错误",

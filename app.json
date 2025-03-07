@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "chatapp-v3-manual",
-    "slug": "chatapp-v3-manual",
+    "name": "YooChat",
+    "slug": "yoochat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "myapp",
+    "scheme": "yoochat",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

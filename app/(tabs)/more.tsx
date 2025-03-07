@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform, TouchableOpacity, Alert, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, Platform, TouchableOpacity, Alert, TextInput, ActivityIndicator, Switch } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -18,7 +18,13 @@ const PLACEHOLDER_AVATAR = require('@/assets/images/Profile_avatar_placeholder_l
 const APP_BACKGROUND = require('@/assets/images/app-background-small.png');
 
 export default function MoreScreen() {
-  const { session, signOut } = useAuth();
+  const { 
+    session, 
+    signOut,
+    isBiometricEnabled,
+    isBiometricAvailable,
+    toggleBiometric
+  } = useAuth();
   const { currentLanguage, setLanguage } = useLanguage();
   const { chatHistory, loading, searchChats } = useChatHistory();
   const { t } = useTranslation();
@@ -129,6 +135,26 @@ export default function MoreScreen() {
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle" style={styles.sectionTitle}>{t('more.settings')}</ThemedText>
         
+
+          
+        {/* Security Settings */}
+        <TouchableOpacity 
+          style={styles.settingItem}
+          onPress={() => router.push('/(settings)/security' as any)}>
+          <ThemedView style={styles.settingItemContent}>
+            <ThemedView style={styles.settingIconContainer}>
+              <IconSymbol size={24} name="lock.shield" color="#0a7ea4" />
+            </ThemedView>
+            <ThemedView style={styles.settingInfo}>
+              <ThemedText type="defaultSemiBold">{t('more.securitySettings')}</ThemedText>
+              <ThemedText style={styles.settingDescription}>
+                {t('more.securitySettingsDescription')}
+              </ThemedText>
+            </ThemedView>
+            <IconSymbol size={20} name="chevron.right" color="#666" />
+          </ThemedView>
+        </TouchableOpacity>
+
         {/* Language Selection */}
         <ThemedView style={styles.languageSection}>
           <ThemedText type="defaultSemiBold" style={styles.languageTitle}>{t('more.language')}</ThemedText>
@@ -324,5 +350,15 @@ const styles = StyleSheet.create({
   },
   noMessages: {
     color: '#999',
+  },
+  settingIconContainer: {
+    marginRight: 12,
+  },
+  settingInfo: {
+    flex: 1,
+  },
+  settingDescription: {
+    fontSize: 12,
+    color: '#666',
   },
 });
